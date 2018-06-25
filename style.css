@@ -1,0 +1,54 @@
+.titleSpace {
+  margin-top: 4vh;
+}
+
+.videoContainer {
+    margin-top: 8vh;
+}
+
+.video-circle {
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 2vh;
+  width: 50vh;
+  height: 50vh;
+}
+
+
+.Buttons {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 4vh;
+}
+
+.alert {
+	box-shadow: 5px 5px #578782B0;
+  width: 90%;
+  left: 0;
+  right: 0;
+  margin:5px auto;
+  position: absolute;
+}
+
+* { padding: 0; margin: 0; }
+html, body, #fullheight {
+    min-height: 100% !important;
+    height: 100%;
+}
+
+header {
+  background: linear-gradient(to bottom, #d7fff1 0%, #50c6d8 100%);
+  height: 90vh;
+  margin-bottom: 5vh;
+  border-bottom-left-radius:10%;
+  border-bottom-right-radius:10%;
+  position: relative;
+  min-height: 730px;
+  overflow:auto;
+}
+
+main {
+  background: linear-gradient(to bottom, #ffffff 0%, #e1f6f2 100%);
+  min-height:200px;
+}

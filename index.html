@@ -1,0 +1,84 @@
+<!doctype html>
+<!-- SlouchyJS -->
+<!-- ROSENKRANZ Hugo -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+    <link href="./icon-style.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <body style="text-align: center;">
+
+      <header>
+        <div id="alertSlouch"; class="alert alert-warning" style="visibility: hidden" role="alert">
+          IT SEEMS THAT YOU ARE SLOUCHING !
+        </div>
+        <div class="titleSpace">
+          <h1>SlouchyJS</h1>
+          <p><i>What do using computer and body building have in common ? Your posture matters</i></p>
+        </div>
+
+        <div class="videoContainer">
+          <div class="web-cam">
+            <video style="background: black" class="video-circle" id="video" autoplay></video>
+          </div>
+
+          <div>
+            <h3 id="instruct">Not Monitoring</h3>
+            <b id="subInstruct">Press get started to record your posture</b>
+          </div>
+        </div>
+
+        <div class="Buttons">
+          <button type="button" onclick="startTraining();" class="btn btn-success">Get Started</button>
+          <button type="button" onclick="stop()" class="btn btn-danger">Stop</button>
+        </div>
+      </header>
+
+      <main>
+        <div class="container">
+          <h2 id="info">Information</h2>
+          <hr>
+          <div style="text-align: left;">
+            <p><b>SlouchyJS</b> helps you adjust your posture during long hours spent in front of your computer.</p>
+            <p>Your webcam output will be processed in real-time <b>locally</b> by a neural network (using tensorflowJS) to monitor your posture.</p>
+            <p>This application has been designed so that <b>no</b> record from your webcam will be transfered through the internet.</p>
+            <p>Engineered by Hugo Rosenkranz | Keep up with me on Steemit.</p>
+            <p>An original idea from <a href="https://github.com/pyskell/slouchy" target="_blank">pyskell</a>.</p>
+          </div>
+          <h2 id="htu">How to Use</h2>
+          <hr>
+          <div style="text-align: left;">
+            <p>Since this project is in an early stage of its developement, it only supports <a href="https://www.google.com/chrome/">Google Chrome</a>.
+            <p>First of all, you will need to train the network by pressing the <i>Get Started</i> button and record yourself following the instructions below the video.</p>
+            <p>It is highly recommanded that you create an account without which you will have to train the network every time you reload the page.</p>
+            <p>To support the project you can reach to us on Telegram or GitHub.</p>
+          </div>
+          <h2 id="risk">Health</h2>
+          <hr>
+          <div style="text-align: left;">
+            <p>Muscle tension...</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum elementum facilisis mattis. Fusce tristique leo nec dolor dignissim, id euismod eros pellentesque. Mauris pharetra nibh sed neque congue aliquam.</p>
+            <p>Learn more : <a href="">Link</a></p>
+          </div>
+          <hr>
+          <ul class="social-icons icon-circle icon-zoom list-unstyled list-inline" style="margin-bottom: 0;">
+      			<li><a href="https://t.me/joinchat/AAAAAEYqOz-OxqWMQibxyw" title="Join the Community"><i class="fab fa-telegram"></i></a></li>
+      			<li><a href="https://github.com/ackRow/" title="Source Code"><i class="fab fa-github"></i></a></li>
+      		</ul>
+
+        </div>
+      </main>
+    <canvas  id="myCanvas" width="0" height="0" style="display:none" ></canvas>
+  </body>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.11.2"> </script>
+  <script src="./neural_net.js"> </script>
+  <script src="./ui.js"> </script>
+  <script src="./webcam.js"> </script>
+  <script src="./slouchy.js"> </script>
+</html>
