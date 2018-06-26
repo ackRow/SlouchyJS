@@ -91,8 +91,7 @@ function train(){};
 // Get a prediction of the posture based on webcam photo
 function predict(X){
   const y_pred = model.predict(tf.tensor4d([X], [1, IMG_SIZE, IMG_SIZE, 3]));
-
   const y_class = tf.argMax(y_pred, [1]).dataSync();
 
-  return y_pred;
+  return y_class;
 }
