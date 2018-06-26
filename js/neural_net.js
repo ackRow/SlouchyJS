@@ -11,7 +11,7 @@ let Y_train = []
 
 let history;
 
-// Simple CNN
+/* Simple CNN
 
 const model = tf.sequential();
 
@@ -74,7 +74,19 @@ function train(){
       show_error(error);
     }
   );
-}
+}*/
+
+let model;
+
+tf.loadModel('https://thefallen.one/SlouchyJS/js_model/model.json').then(function(result, error){
+if(!error){
+  model = result;
+  console.log("model successfully loaded ! ");
+}else
+  console.error("error");
+});
+
+function train(){};
 
 // Get a prediction of the posture based on webcam photo
 function predict(X){
@@ -82,5 +94,5 @@ function predict(X){
 
   const y_class = tf.argMax(y_pred, [1]).dataSync();
 
-  return y_class;
+  return y_pred;
 }

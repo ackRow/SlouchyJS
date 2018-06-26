@@ -2,15 +2,19 @@ const backgrndPicInterval = 5000; // 5s
 
 let STOP;
 let hasWebcamAccess = false;
+let canvas;
 
 function backgroundMonitoring(){
 
   console.log("in background");
-
   STOP = false;
-  then = Date.now(); // Record time for statistics
+  //then = Date.now(); // Record time for statistics
 
-  backPic(backgrndPicInterval); // interval of 5s
+  if(!hasWebcamAccess){
+    getMediaStream(false);
+  }
+  
+  backPic(); // interval of backgrndPicInterval
 }
 
 function jump(h){
@@ -31,7 +35,6 @@ function askPermission(){
     /* If the user has already accepted the notification permission
       We can assume that he already knows the website and load the webcam directly.
     */
-
     getMediaStream(false); // load WebCam without training
   }
 }
@@ -67,8 +70,10 @@ window.onload = function(){
 
   askPermission(); /* If the user hasn't accepted one of the permissions
                       He will be redirected to Information section. */
-
   //getMediaStream(false); // load WebCam directly for local test
+
+  // hidden canvas to process captured photo
+  canvas = document.getElementById("myCanvas");
 
   instruct = document.getElementById("instruct");
   subInstruct = document.getElementById("subInstruct");

@@ -5,7 +5,7 @@ navigator.getUserMedia = ( navigator.getUserMedia ||
                        navigator.mozGetUserMedia ||
                        navigator.msGetUserMedia);
 
-let stream, imageCapture, video;
+let mediaStreamTrack, imageCapture, video;
 
 // Get access to the webcam
 function getMediaStream(train)
@@ -14,12 +14,11 @@ function getMediaStream(train)
    .then(function(mediaStream)
    {
        hasWebcamAccess = true;
-       stream = mediaStream;
 
        video = document.getElementById('video');
        video.srcObject = mediaStream;
 
-       let mediaStreamTrack = mediaStream.getVideoTracks()[0];
+       mediaStreamTrack = mediaStream.getVideoTracks()[0];
        imageCapture = new ImageCapture(mediaStreamTrack);
 
        if(train){
@@ -39,17 +38,24 @@ function error(error)
 // Weird way to convert a frame to an array of rgb pixel between 0 and 1
 function loadPhoto()
 {
+
+  /*return imageCapture.takePhoto() // Get dataset for python neural net
+  .then(blob => {
+      let url = window.URL.createObjectURL(blob);
+      return url;
+  })
+  .catch(error);*/
+
   // return a Promise
-  return imageCapture.grabFrame()
-  .then(imageBitmap => {
-     canvas = document.getElementById("myCanvas");
+  return imageCapture.grabFrame().then(imageBitmap => {
+
      canvas.width = IMG_SIZE;
      canvas.height = IMG_SIZE;
 
      ctx = canvas.getContext('2d');
      ctx.drawImage(imageBitmap, 0,0, canvas.width, canvas.height);
 
-     x = [];
+     let x = [];
 
      for(let i = 0; i < IMG_SIZE; i++){
        x[i] = [];
@@ -63,18 +69,19 @@ function loadPhoto()
       return x;
     })
     .catch(error => {
+      console.log(error);
       throw "Stop training";
     });
 };
 
 // Stop the recording and training or monitoring
 function stop(){
+
 	STOP = true;
   hasWebcamAccess = false;
   ui_idle();
 
-  var track = stream.getTracks()[0];  // if only one media track
-    track.stop();
+  mediaStreamTrack.stop();
 }
 
 
@@ -106,6 +113,9 @@ function takeBunchPic(){
       setTimeout(takeBunchPic, fpsInterval);
 
   }else{
+    /*X_train.forEach(function(elmt){
+      window.open(elmt, '_blank');
+    });*/
     train();
   }
 }
@@ -133,18 +143,23 @@ function queryTrainingData(){
 
 
 // take picture in the background to check the posture
-function backPic(interval){
+function backPic(){
 
 	if(!STOP){
 
-	  if(predict(loadPhoto()) == 1.0){
-	    alertSlouch.style.visibility = 'visible';
-	    notifySlouching();
-	  }else {
-	    alertSlouch.style.visibility = 'hidden';
-	  }
+    loadPhoto().then(
+      function(x) {
+        if(predict(x) == 1.0){
+    	    alertSlouch.style.visibility = 'visible';
+    	    notifySlouching();
+    	  }else {
+    	    alertSlouch.style.visibility = 'hidden';
+    	  }
+      }).catch(error => {
+        console.log(error);
+    });
 
-	  setTimeout(backPic, interval); // 5s
+	  setTimeout(backPic, backgrndPicInterval);
 	}
 
 }
