@@ -27,6 +27,8 @@ let alertSlouch;
 // Change instructions during training  (could be done in a better way I think)
 function animInstruct(ctr_pic){
 
+  instruct.innerHTML = INS.straight;
+  
   if(ctr_pic >= NB_PIC-1){
     instruct.innerHTML = INS.monitoring;
     subInstruct.innerHTML = subIns.monitoring;

@@ -13,7 +13,7 @@ function backgroundMonitoring(){
   if(!hasWebcamAccess){
     getMediaStream(false);
   }
-  
+
   backPic(); // interval of backgrndPicInterval
 }
 
@@ -68,9 +68,9 @@ function isChrome(){
 
 window.onload = function(){
 
-  askPermission(); /* If the user hasn't accepted one of the permissions
-                      He will be redirected to Information section. */
-  //getMediaStream(false); // load WebCam directly for local test
+  //askPermission(); /* If the user hasn't accepted one of the permissions
+  //                    He will be redirected to Information section. */
+  getMediaStream(false); // load WebCam directly for local test
 
   // hidden canvas to process captured photo
   canvas = document.getElementById("myCanvas");

@@ -123,9 +123,6 @@ function takeBunchPic(){
 // Launch the training sequence
 function queryTrainingData(){
 
-  // UI
-  instruct.innerHTML = INS.straight;
-
   // variable
   ctr_pic = 0;
   recTime = 30000;// ms
