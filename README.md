@@ -13,10 +13,11 @@ _It was right on the mark !_
 Poor posture when sitting in front of a computer lead sooner or later to muscular tension if not pain.  
 This is how I realised that the importance of a good sitting posture is rarely mentioned in our digital world.
 ## Idea
-So when I stumbled upon a GitHub project trying to notify slouchy people, it immediately kept my attention.
+So when I stumbled upon a [GitHub project](https://github.com/pyskell/slouchy) that aims at notifying slouchy people, it immediately kept my attention.
 Unfortunately, the source code (in Python) wasn’t up to date and I didn’t manage to run it on my MacBook.
 
-10 python versions and libraries installed later, I said to myself :  
+10 python versions and libraries installed later, I said to myself :
+
 _Why not doing it using the brand new `Tensorflow JS` so that anybody could use this app without having to struggle installing dependencies._
 
 ## Project
@@ -26,10 +27,10 @@ The clear benefit of using front end Javascript to process images lay in __keepi
 
 ## How to contribute
 
-* Join the Telegram
+* Join the [Telegram](https://t.me/joinchat/AAAAAEYqOz-OxqWMQibxyw)
 
-* Like TensorFlow ? Help developing the Neural Network
+* Like TensorFlow ? [Help developing the Neural Network](https://github.com/ackRow/SlouchyJS/wiki/TensorFlow)
 
-* Like front end Javascript ? Help improving the UI  experience
+* Like front end Javascript ? [Help improving the UI  experience](https://github.com/ackRow/SlouchyJS/wiki/UserInterface)
 
-* Like Image Processing ? Help capturing image from WebCam and preprocessing it to feed the neural network
+* Like Image Processing ? [Help capturing image from WebCam and preprocessing it to feed the neural network](https://github.com/ackRow/SlouchyJS/wiki/ImageProcessing)
