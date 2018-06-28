@@ -1,3 +1,6 @@
+"use strict";
+"version 0.1.0";
+
 const backgrndPicInterval = 5000; // 5s
 
 let STOP;
@@ -59,7 +62,7 @@ function isChrome(){
   let isIEedge = winNav.userAgent.indexOf("Edge") > -1;
   let isIOSChrome = winNav.userAgent.match("CriOS");
 
-  return isChromium !== null &&
+  return true;//isChromium !== null &&
           typeof isChromium !== "undefined" &&
           vendorName === "Google Inc." &&
           isOpera === false &&

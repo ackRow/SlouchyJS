@@ -28,7 +28,7 @@ let alertSlouch;
 function animInstruct(ctr_pic){
 
   instruct.innerHTML = INS.straight;
-  
+
   if(ctr_pic >= NB_PIC-1){
     instruct.innerHTML = INS.monitoring;
     subInstruct.innerHTML = subIns.monitoring;
@@ -61,7 +61,7 @@ function notifySlouching() {
   else {
 
     var notification = new Notification('Got you', {
-      icon: './notif.png',
+      icon: './style/img/notif.png',
       body: "It seems that you are slouching !",
     });
 

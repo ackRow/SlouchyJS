@@ -65,10 +65,10 @@ function createDataset(nb_pic){
 
 // save trained neural net to your pc
 function downloadNeuralNet(){
-  model.save('downloads://mySlouchyNN');
+  model.save('downloads://my-slouchy-model');
 }
 
-// load new neural net
+// load custom neural net
 function loadNeuralNet(url){
   tf.loadModel(url).then(function(result, error){
   if(!error){

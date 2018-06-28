@@ -47,10 +47,6 @@ function train(){
   );
 }
 
-function save(){
-  model.save('downloads://my-slouchy'); // temporary
-}
-
 // Get a prediction of the posture based on webcam photo
 function predict(X){
   const y_pred = model.predict(tf.tensor4d([X], [1, IMG_SIZE, IMG_SIZE, 3]));
