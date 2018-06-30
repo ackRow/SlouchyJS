@@ -18,12 +18,12 @@ Unfortunately, the source code (in Python) wasn’t up to date and I didn’t ma
 
 10 python versions and libraries installed later, I said to myself :
 
-_Why not doing it using the brand new `Tensorflow JS` so that anybody could use this app without having to struggle installing dependencies._
+_Why not doing it using the brand new [TensorFlow JS](https://js.tensorflow.org) so that anybody could use this app without having to struggle installing dependencies._
 
 ## Project
 As you’ve (hopefully) understood SlouchyJS promises to notify the user when he is slouching using only his webcam and a convolutional neural network (or other image recognition techniques).
 
-The clear benefit of using front end Javascript to process images lay in __keeping webcam pictures on the user’s computer__.
+The clear benefit of using front end Javascript to process images lays in __keeping webcam pictures on the user’s computer__.
 
 ## How to contribute
 
