@@ -1,6 +1,12 @@
 <!doctype html>
-<!-- SlouchyJS -->
-<!-- ROSENKRANZ Hugo -->
+<!--
+  Copyright(C) 2018 Hugo Rosenkranz
+
+  This Source Code Form is subject to the terms of the
+  Mozilla Public License, v. 2.0. If a copy of the MPL
+  was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+-->
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -11,22 +17,26 @@
     <link rel="stylesheet" href="./style/css/icon-style.css"/>
     <link rel="stylesheet" href="./style/css/style.css">
   </head>
-  <body style="text-align: center;">
-
+  <body>
+      <!-- WebCam Part (Top) -->
       <header>
+        <!-- Alert shown when the user is predicted slouchy -->
         <div id="alertSlouch"; class="alert alert-warning" style="visibility: hidden" role="alert">
           IT SEEMS THAT YOU ARE SLOUCHING !
         </div>
+
         <div class="titleSpace">
           <h1>SlouchyJS</h1>
           <p><i>What do using computer and body building have in common ? Your posture matters</i></p>
         </div>
 
+        <!-- Show webcam output to the user -->
         <div class="videoContainer">
           <div class="web-cam">
             <video style="background: black" class="video-circle" id="video" autoplay></video>
           </div>
 
+          <!-- And instructions to follow -->
           <div>
             <h3 id="instruct">Not Monitoring</h3>
             <b id="subInstruct">Press get started to record your posture</b>
@@ -39,11 +49,12 @@
         </div>
       </header>
 
+      <!-- Informations (Bottom) -->
       <main>
         <div class="container">
           <h2 id="info">Information</h2>
           <hr>
-          <div style="text-align: left;">
+          <div class="paragraph">
             <p><b>SlouchyJS</b> helps you adjust your posture during long hours spent in front of your computer.</p>
             <p>Your webcam output will be processed in real-time <b>locally</b> by a neural network (using tensorflowJS) to monitor your posture.</p>
             <p>This application has been designed so that <b>no</b> record from your webcam will be transfered through the internet.</p>
@@ -52,7 +63,7 @@
           </div>
           <h2 id="htu">How to Use</h2>
           <hr>
-          <div style="text-align: left;">
+          <div class="paragraph">
             <p>Since this project is in an early stage of its developement, it only supports <a href="https://www.google.com/chrome/">Google Chrome</a>.
             <p>First of all, you will need to train the network by pressing the <i>Get Started</i> button and record yourself following the instructions below the video.</p>
             <p>It is highly recommanded that you create an account without which you will have to train the network every time you reload the page.</p>
@@ -60,7 +71,7 @@
           </div>
           <h2 id="risk">Health</h2>
           <hr>
-          <div style="text-align: left;">
+          <div class="paragraph">
             <p>Muscle tension...</p>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum elementum facilisis mattis. Fusce tristique leo nec dolor dignissim, id euismod eros pellentesque. Mauris pharetra nibh sed neque congue aliquam.</p>
             <p>Learn more : <a href="">Link</a></p>
@@ -72,6 +83,7 @@
       		</ul>
         </div>
       </main>
+    <!-- Hidden canvas to process images -->
     <canvas  id="myCanvas" width="0" height="0" style="display:none" ></canvas>
   </body>
 

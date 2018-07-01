@@ -1,4 +1,14 @@
-// Function for research and developement
+/*
+ * Copyright(C) 2018 Hugo Rosenkranz
+ *
+ * This Source Code Form is subject to the terms of the
+ * Mozilla Public License, v. 2.0. If a copy of the MPL
+ * was not distributed with this file, You can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ */
+
+/** Functions for research and developement **/
+
 let dataset_size = NB_PIC;
 
 let straight_pic = [];
@@ -10,11 +20,11 @@ let i_pic;
 function webCam2Blob(){
   return imageCapture.takePhoto()
   .then(blob => {
-      //let url = window.URL.createObjectURL(blob);
       return blob;
   })
   .catch(error);
 }
+
 
 function takeBunchPic_dataset(){
 
@@ -51,7 +61,7 @@ function takeBunchPic_dataset(){
   }
 }
 
-// download your training pictures (can be used with Python)
+// download your training pictures (e.g. to process them with Python)
 function createDataset(nb_pic){
   STOP = false;
   if(!hasWebcamAccess){
@@ -68,7 +78,7 @@ function downloadNeuralNet(){
   model.save('downloads://my-slouchy-model');
 }
 
-// load custom neural net
+// load custom neural net from url
 function loadNeuralNet(url){
   tf.loadModel(url).then(function(result, error){
   if(!error){

@@ -1,4 +1,11 @@
-// UI
+/*
+ * Copyright(C) 2018 Hugo Rosenkranz
+ *
+ * This Source Code Form is subject to the terms of the
+ * Mozilla Public License, v. 2.0. If a copy of the MPL
+ * was not distributed with this file, You can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ */
 
 // Instructions
 const INS = {
@@ -6,7 +13,8 @@ const INS = {
       straight:"Stand Straight",
       slouch:"Slouch",
       monitoring:"Slouchy will keep an eye on your posture",
-      error:"An error occurred :("
+      error:"An error occurred :(",
+      loading:"Processing pictures..."
 };
 
 // Sub Instructions
@@ -17,7 +25,8 @@ const subIns = {
       right:"Look right",
       back:"Lean back",
       monitoring:"Let this tab open and you'll be notify if you are slouching",
-      error:"Try reloading the page"
+      error:"Try reloading the page",
+      loading:"Please wait",
 };
 
 let instruct;
@@ -25,13 +34,13 @@ let subInstruct;
 let alertSlouch;
 
 // Change instructions during training  (could be done in a better way I think)
-function animInstruct(ctr_pic){
+function ui_anim(ctr_pic){
 
   instruct.innerHTML = INS.straight;
 
   if(ctr_pic >= NB_PIC-1){
-    instruct.innerHTML = INS.monitoring;
-    subInstruct.innerHTML = subIns.monitoring;
+    instruct.innerHTML = INS.loading;
+    subInstruct.innerHTML = subIns.loading;
   }else{
     if(ctr_pic % (NB_PIC/2) == 0){
       subInstruct.innerHTML = subIns.front;
@@ -53,7 +62,38 @@ function animInstruct(ctr_pic){
 
 }
 
-// Show a notification when the user is slouching
+// Init UI
+function ui_idle(){
+  instruct.innerHTML = INS.idle;
+  subInstruct.innerHTML = subIns.idle;
+  alertSlouch.style.visibility = 'hidden';
+}
+
+// An error occured...
+function ui_error(error){
+  console.error(error);
+  instruct.innerHTML = INS.error;
+  subInstruct.innerHTML = subIns.error;
+}
+
+// Inform the user that he's been monitored in background and can switch tab
+function ui_background(){
+  instruct.innerHTML = INS.monitoring;
+  subInstruct.innerHTML = subIns.monitoring;
+}
+
+// Show alert and notification if slouching
+function ui_monitor(is_slouchy){
+  if(is_slouchy){
+    alertSlouch.style.visibility = 'visible';
+    notifySlouching();
+  }else {
+    alertSlouch.style.visibility = 'hidden';
+  }
+}
+
+
+// Show slouchy notification or ask for permission
 function notifySlouching() {
 
   if (Notification.permission !== "granted")
@@ -70,16 +110,4 @@ function notifySlouching() {
     };
 
   }
-}
-
-function show_error(error){
-  console.log(error);
-  instruct.innerHTML = INS.error;
-  subInstruct.innerHTML = subIns.error;
-}
-
-function ui_idle(){
-  instruct.innerHTML = INS.idle;
-  subInstruct.innerHTML = subIns.idle;
-  alertSlouch.style.visibility = 'hidden';
 }

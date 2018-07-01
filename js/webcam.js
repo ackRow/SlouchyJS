@@ -1,65 +1,70 @@
-// WebCam
+/*
+ * Copyright(C) 2018 Hugo Rosenkranz
+ *
+ * This Source Code Form is subject to the terms of the
+ * Mozilla Public License, v. 2.0. If a copy of the MPL
+ * was not distributed with this file, You can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ */
 
 navigator.getUserMedia = ( navigator.getUserMedia ||
                        navigator.webkitGetUserMedia ||
                        navigator.mozGetUserMedia ||
                        navigator.msGetUserMedia);
 
-let mediaStreamTrack, imageCapture, video;
+/** Init and Take Picture from the WebCam **/
+class WebCam {
 
-// Get access to the webcam
-function getMediaStream(train)
-{
-   window.navigator.mediaDevices.getUserMedia({video: true})
-   .then(function(mediaStream)
-   {
-       hasWebcamAccess = true;
+  constructor(videoELmt, canvas) {
+    this.videoElmt = videoELmt;
+    this.canvas = canvas;
+    this.hasWebcamAccess = false;
+  }
 
-       video = document.getElementById('video');
-       video.srcObject = mediaStream;
+  // Get access to the webcam (return a Promise)
+  getMediaStream()
+  {
+     return window.navigator.mediaDevices.getUserMedia({video: true})
+       .then(function(mediaStream)
+       {
+           this.hasWebcamAccess = true;
 
-       mediaStreamTrack = mediaStream.getVideoTracks()[0];
-       imageCapture = new ImageCapture(mediaStreamTrack);
+           //video = document.getElementById('video');
+           videoElmt.srcObject = mediaStream;
 
-       if(train){
-         queryTrainingData(); // Start training
-       }
-   })
-   .catch(error);
-}
+           this.mediaStreamTrack = mediaStream.getVideoTracks()[0];
+           this.imageCapture = new ImageCapture(mediaStreamTrack);
 
-function error(error)
-{
-   //console.error('error:', error);
-   hasWebcamAccess = false;
-   jump("info");
-}
+       })
+       .catch(function(error)
+        {
+           this.hasWebcamAccess = false;
+           throw "Can't access webcam";
+           //jump("info");
+        });
+  }
 
-// Weird way to convert a frame to an array of rgb pixel between 0 and 1
-function loadPhoto()
-{
+  // Releasing the webcam
+  stop(){
+    if(hasWebcamAccess)
+      mediaStreamTrack.stop();
+  }
 
-  /*return imageCapture.takePhoto() // Get dataset for python neural net
-  .then(blob => {
-      let url = window.URL.createObjectURL(blob);
-      return url;
-  })
-  .catch(error);*/
+  // Weird way to convert a frame to an array of rgb pixel between 0 and 1 (return a Promise)
+  takePicture(img_size){
+    return imageCapture.grabFrame().then(imageBitmap => {
 
-  // return a Promise
-  return imageCapture.grabFrame().then(imageBitmap => {
-
-     canvas.width = IMG_SIZE;
-     canvas.height = IMG_SIZE;
+     canvas.width = img_size;
+     canvas.height = img_size;
 
      ctx = canvas.getContext('2d');
      ctx.drawImage(imageBitmap, 0,0, canvas.width, canvas.height);
 
      let x = [];
 
-     for(let i = 0; i < IMG_SIZE; i++){
+     for(let i = 0; i < img_size; i++){
        x[i] = [];
-       for(let j = 0; j < IMG_SIZE; j++){
+       for(let j = 0; j < img_size; j++){
          let pixel = ctx.getImageData(j,i,1,1).data;
 
          // rgb is inverted for Keras pre trained model ?
@@ -69,23 +74,15 @@ function loadPhoto()
       return x;
     })
     .catch(error => {
-      console.log(error);
       throw "Stop training";
     });
-};
+  }
 
-// Stop the recording and training or monitoring
-function stop(){
-
-	STOP = true;
-  hasWebcamAccess = false;
-  ui_idle();
-
-  mediaStreamTrack.stop();
 }
 
+/** Helper Functions **/
 
-let recTime, fpsInterval, then, ctr_pic;
+let recTime, recInterval, then, ctr_pic;
 let y;
 
 // Take NB_PIC during recTime to train the neural network
@@ -96,12 +93,12 @@ function takeBunchPic(){
 
   if (ctr_pic < NB_PIC){
 
-    loadPhoto().then(
+    webcam.takePicture().then(
       function(x) {
         X_train.push(x);
         Y_train.push(y);
       }).catch(error => {
-        console.log(error);
+        console.error(error);
       });
 
     ctr_pic++;
@@ -110,12 +107,9 @@ function takeBunchPic(){
     }
 
     if(!STOP)
-      setTimeout(takeBunchPic, fpsInterval);
+      setTimeout(takeBunchPic, recInterval);
 
   }else{
-    /*X_train.forEach(function(elmt){
-      window.open(elmt, '_blank');
-    });*/
     train();
   }
 }
@@ -123,10 +117,9 @@ function takeBunchPic(){
 // Launch the training sequence
 function queryTrainingData(){
 
-  // variable
-  ctr_pic = 0;
+  ctr_pic = 0; // counter
   recTime = 30000;// ms
-  fpsInterval = recTime/NB_PIC;
+  recInterval = recTime/NB_PIC;
 
   //then = Date.now(); show progress ?
 
@@ -139,24 +132,20 @@ function queryTrainingData(){
 }
 
 
-// take picture in the background to check the posture
-function backPic(){
+// take pictures each 5s to monitor posture in background
+function bckgrndPic(){
 
 	if(!STOP){
 
-    loadPhoto().then(
+    webcam.takePicture().then(
       function(x) {
-        if(predict(x) == 1.0){
-    	    alertSlouch.style.visibility = 'visible';
-    	    notifySlouching();
-    	  }else {
-    	    alertSlouch.style.visibility = 'hidden';
-    	  }
+        ui_monitor(predict(x) == 1.0);
+        
       }).catch(error => {
         console.log(error);
     });
 
-	  setTimeout(backPic, backgrndPicInterval);
+	  setTimeout(backPic, bckgrndPicInterval);
 	}
 
 }

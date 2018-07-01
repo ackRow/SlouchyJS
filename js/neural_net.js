@@ -1,3 +1,12 @@
+/*
+ * Copyright(C) 2018 Hugo Rosenkranz
+ *
+ * This Source Code Form is subject to the terms of the
+ * Mozilla Public License, v. 2.0. If a copy of the MPL
+ * was not distributed with this file, You can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ */
+
 const CLASSES = ['STRAIGHT','SLOUCH'];
 const NB_CLASSES = CLASSES.length
 const IMG_SIZE = 50;
@@ -14,22 +23,22 @@ let history;
 
 let model;
 
-tf.loadModel('https://thefallen.one/SlouchyJS/js_model/model.json').then(function(result, error){
-if(!error){
-  model = result;
-  const LEARNING_RATE = 0.0005;
-  const optimizer = tf.train.sgd(LEARNING_RATE);
+tf.loadModel('https://thefallen.one/SlouchyJS/js_maodel/model.json').then(function(result, error){
+  if(!error){
+    model = result;
+    const LEARNING_RATE = 0.0005;
+    const optimizer = tf.train.sgd(LEARNING_RATE);
 
-  model.compile({
-    optimizer: optimizer,
-    loss: 'categoricalCrossentropy',
-    metrics: ['accuracy'],
-  });
+    model.compile({
+      optimizer: optimizer,
+      loss: 'categoricalCrossentropy',
+      metrics: ['accuracy'],
+    });
 
-  console.log("model successfully loaded ! ");
-}else
-  console.error("error");
-});
+    console.log("model successfully loaded ! ");
+  }else
+    ui_error(error);
+}).catch(error => ui_error(error));
 
 function train(){
   xs = tf.tensor4d(X_train, [NB_PIC, IMG_SIZE, IMG_SIZE, 3]);
@@ -42,7 +51,7 @@ function train(){
       backgroundMonitoring();
     },
     function(error) {
-      show_error(error);
+      ui_error(error);
     }
   );
 }

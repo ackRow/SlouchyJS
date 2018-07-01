@@ -1,7 +1,18 @@
+/*
+ * Copyright(C) 2018 Hugo Rosenkranz
+ *
+ * This Source Code Form is subject to the terms of the
+ * Mozilla Public License, v. 2.0. If a copy of the MPL
+ * was not distributed with this file, You can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ */
+
 .titleSpace {
   margin-top: 4vh;
 }
 
+
+/* Div containing webcam output and instructions */
 .videoContainer {
     margin-top: 8vh;
 }
@@ -22,6 +33,7 @@
   bottom: 4vh;
 }
 
+/* Adds a shadow to the Bootstrap alert */
 .alert {
 	box-shadow: 5px 5px #578782B0;
   width: 90%;
@@ -31,10 +43,18 @@
   position: absolute;
 }
 
+.paragraph {
+  text-align: left;
+}
+
 * { padding: 0; margin: 0; }
 html, body, #fullheight {
     min-height: 100% !important;
     height: 100%;
+}
+
+body {
+  text-align: center;
 }
 
 header {

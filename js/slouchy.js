@@ -1,5 +1,5 @@
 "use strict";
-"version 0.1.0";
+"version 0.2.0";
 
 /*
  * Copyright(C) 2018 Hugo Rosenkranz
@@ -10,28 +10,22 @@
  * http://mozilla.org/MPL/2.0/.
  */
 
-const backgrndPicInterval = 5000; // 5s
+const bckgrndPicInterval = 5000; // 5s
 
 let STOP;
-let hasWebcamAccess = false;
 let canvas;
+let webcam;
 
-function backgroundMonitoring(){
 
-  console.log("in background");
-  STOP = false;
-  //then = Date.now(); // Record time for statistics
-
-  if(!hasWebcamAccess){
-    getMediaStream(false);
-  }
-
-  backPic(); // interval of backgrndPicInterval
-}
+/** Helper Functions **/
 
 function jump(h){
     let top = document.getElementById(h).offsetTop; //Getting Y of target element
     window.scrollTo(0, top);                        //Go there directly or some transition
+}
+
+function loadWebCam(){
+  webcam.getMediaStream().catch(error => jump("htu"))
 }
 
 function askPermission(){
@@ -47,20 +41,8 @@ function askPermission(){
     /* If the user has already accepted the notification permission
       We can assume that he already knows the website and load the webcam directly.
     */
-    getMediaStream(false); // load WebCam without training
+    loadWebCam();
   }
-}
-
-function startTraining(){
-  if(!isChrome()){
-    alert("You must use Google Chrome"); // temporary
-    return;
-  }
-  STOP = false;
-  if(hasWebcamAccess)
-    queryTrainingData();
-  else
-    getMediaStream(true);
 }
 
 function isChrome(){
@@ -71,21 +53,53 @@ function isChrome(){
   let isIEedge = winNav.userAgent.indexOf("Edge") > -1;
   let isIOSChrome = winNav.userAgent.match("CriOS");
 
-  return true;//isChromium !== null &&
+  return isChromium !== null &&
           typeof isChromium !== "undefined" &&
           vendorName === "Google Inc." &&
           isOpera === false &&
           isIEedge === false;
 }
 
+
+
+
+/** Main Functions **/
+
+function backgroundMonitoring(){
+
+  STOP = false;
+  ui_background();
+  //then = Date.now(); // Record time for statistics
+
+  bckgrndPic();
+}
+
+
+function startTraining(){
+  STOP = false;
+
+  queryTrainingData();
+}
+
+
+function stop(){
+  STOP = true;
+  
+  webcam.stop();
+  ui_idle();
+}
+
+
+
+/** Init Function **/
+
 window.onload = function(){
+
+  webcam = new WebCam(document.getElementById("video"), document.getElementById("myCanvas")); // hidden canvas to process captured photo
 
   //askPermission(); /* If the user hasn't accepted one of the permissions
   //                    He will be redirected to Information section. */
-  getMediaStream(false); // load WebCam directly for local test
-
-  // hidden canvas to process captured photo
-  canvas = document.getElementById("myCanvas");
+  loadWebCam(); // load webcam directly for tests
 
   instruct = document.getElementById("instruct");
   subInstruct = document.getElementById("subInstruct");
@@ -93,9 +107,4 @@ window.onload = function(){
   alertSlouch = document.getElementById("alertSlouch");
 
   ui_idle(); // Setting up labels...
-
-  if(!isChrome()){ // temporary
-    STOP = true;
-    jump("htu");
-  }
 }
