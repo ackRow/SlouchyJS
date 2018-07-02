@@ -18,18 +18,18 @@ let i_pic;
 
 // Helper function
 function webCam2Blob(){
-  return imageCapture.takePhoto()
+  return webcam.getImageCapture().takePhoto()
   .then(blob => {
       return blob;
   })
-  .catch(error);
+  .catch(error => ui_error(error));
 }
 
 
 function takeBunchPic_dataset(){
 
   //UI animate
-  animInstruct((i_pic/dataset_size)*NB_PIC);
+  ui_anim((i_pic/dataset_size)*NB_PIC);
 
   let dataset = straight_pic;
 
@@ -64,9 +64,6 @@ function takeBunchPic_dataset(){
 // download your training pictures (e.g. to process them with Python)
 function createDataset(nb_pic){
   STOP = false;
-  if(!hasWebcamAccess){
-    getMediaStream(false);
-  }
 
   dataset_size = nb_pic;
   i_pic = 0;

@@ -7,10 +7,7 @@
  * http://mozilla.org/MPL/2.0/.
  */
 
-navigator.getUserMedia = ( navigator.getUserMedia ||
-                       navigator.webkitGetUserMedia ||
-                       navigator.mozGetUserMedia ||
-                       navigator.msGetUserMedia);
+
 
 /** Init and Take Picture from the WebCam **/
 class WebCam {
@@ -19,46 +16,57 @@ class WebCam {
     this.videoElmt = videoELmt;
     this.canvas = canvas;
     this.hasWebcamAccess = false;
+
+    //this.mediaStreamTrack = null;
+    //this.imageCapture = null;
   }
 
   // Get access to the webcam (return a Promise)
   getMediaStream()
   {
-     return window.navigator.mediaDevices.getUserMedia({video: true})
-       .then(function(mediaStream)
-       {
-           this.hasWebcamAccess = true;
+    let myClass = this;
 
-           //video = document.getElementById('video');
-           videoElmt.srcObject = mediaStream;
+    navigator.getUserMedia = ( navigator.getUserMedia ||
+                     navigator.webkitGetUserMedia ||
+                     navigator.mozGetUserMedia ||
+                     navigator.msGetUserMedia);
 
-           this.mediaStreamTrack = mediaStream.getVideoTracks()[0];
-           this.imageCapture = new ImageCapture(mediaStreamTrack);
+    return window.navigator.mediaDevices.getUserMedia({video: true})
+     .then(function(mediaStream)
+     {
+        myClass.hasWebcamAccess = true;
 
-       })
-       .catch(function(error)
-        {
-           this.hasWebcamAccess = false;
-           throw "Can't access webcam";
-           //jump("info");
-        });
+         //video = document.getElementById('video');
+        myClass.videoElmt.srcObject = mediaStream;
+
+        myClass.mediaStreamTrack = mediaStream.getVideoTracks()[0];
+        myClass.imageCapture = new ImageCapture(myClass.mediaStreamTrack);
+
+     })
+     .catch(function(error)
+      {
+         myClass.hasWebcamAccess = false;
+         console.error(error);
+         throw "Can't access webcam";
+         //jump("info");
+      });
   }
 
   // Releasing the webcam
   stop(){
-    if(hasWebcamAccess)
-      mediaStreamTrack.stop();
+    if(this.hasWebcamAccess)
+      this.mediaStreamTrack.stop();
   }
 
   // Weird way to convert a frame to an array of rgb pixel between 0 and 1 (return a Promise)
   takePicture(img_size){
-    return imageCapture.grabFrame().then(imageBitmap => {
+    return this.imageCapture.grabFrame().then(imageBitmap => {
 
-     canvas.width = img_size;
-     canvas.height = img_size;
+     this.canvas.width = img_size;
+     this.canvas.height = img_size;
 
-     ctx = canvas.getContext('2d');
-     ctx.drawImage(imageBitmap, 0,0, canvas.width, canvas.height);
+     let ctx = this.canvas.getContext('2d');
+     ctx.drawImage(imageBitmap, 0,0, this.canvas.width, this.canvas.height);
 
      let x = [];
 
@@ -74,8 +82,13 @@ class WebCam {
       return x;
     })
     .catch(error => {
+      console.error(error);
       throw "Stop training";
     });
+  }
+
+  getImageCapture(){
+    return this.imageCapture;
   }
 
 }
@@ -89,11 +102,11 @@ let y;
 function takeBunchPic(){
 
   //UI animate
-  animInstruct(ctr_pic);
+  ui_anim(ctr_pic);
 
   if (ctr_pic < NB_PIC){
 
-    webcam.takePicture().then(
+    webcam.takePicture(IMG_SIZE).then(
       function(x) {
         X_train.push(x);
         Y_train.push(y);
@@ -110,6 +123,7 @@ function takeBunchPic(){
       setTimeout(takeBunchPic, recInterval);
 
   }else{
+    console.log(X_train);
     train();
   }
 }
@@ -137,7 +151,7 @@ function bckgrndPic(){
 
 	if(!STOP){
 
-    webcam.takePicture().then(
+    webcam.takePicture(IMG_SIZE).then(
       function(x) {
         ui_monitor(predict(x) == 1.0);
         

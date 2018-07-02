@@ -97,9 +97,9 @@ window.onload = function(){
 
   webcam = new WebCam(document.getElementById("video"), document.getElementById("myCanvas")); // hidden canvas to process captured photo
 
-  //askPermission(); /* If the user hasn't accepted one of the permissions
+  askPermission(); /* If the user hasn't accepted one of the permissions
   //                    He will be redirected to Information section. */
-  loadWebCam(); // load webcam directly for tests
+  //loadWebCam(); // load webcam directly for tests
 
   instruct = document.getElementById("instruct");
   subInstruct = document.getElementById("subInstruct");
