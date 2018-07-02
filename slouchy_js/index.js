@@ -84,7 +84,7 @@ function startTraining(){
 
 function stop(){
   STOP = true;
-  
+
   webcam.stop();
   ui_idle();
 }

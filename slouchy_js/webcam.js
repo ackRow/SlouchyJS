@@ -154,12 +154,12 @@ function bckgrndPic(){
     webcam.takePicture(IMG_SIZE).then(
       function(x) {
         ui_monitor(predict(x) == 1.0);
-        
+
       }).catch(error => {
         console.log(error);
     });
 
-	  setTimeout(backPic, bckgrndPicInterval);
+	  setTimeout(bckgrndPic, bckgrndPicInterval);
 	}
 
 }
