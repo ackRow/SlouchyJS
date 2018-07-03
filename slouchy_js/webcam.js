@@ -123,7 +123,6 @@ function takeBunchPic(){
       setTimeout(takeBunchPic, recInterval);
 
   }else{
-    console.log(X_train);
     train();
   }
 }
@@ -149,17 +148,17 @@ function queryTrainingData(){
 // take pictures each 5s to monitor posture in background
 function bckgrndPic(){
 
-	if(!STOP){
+  if(!STOP){
 
     webcam.takePicture(IMG_SIZE).then(
       function(x) {
         ui_monitor(predict(x) == 1.0);
-
+        
       }).catch(error => {
         console.log(error);
     });
 
-	  setTimeout(bckgrndPic, bckgrndPicInterval);
-	}
+    setTimeout(bckgrndPic, bckgrndPicInterval);
+  }
 
 }

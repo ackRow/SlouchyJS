@@ -83,6 +83,6 @@ function loadNeuralNet(url){
 
     console.log("custom model successfully loaded ! ");
   }else
-    console.error("error");
-  });
+    ui_error(error);
+  }).catch(error => ui_error(error));
 }

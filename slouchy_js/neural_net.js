@@ -23,7 +23,7 @@ let history;
 
 let model;
 
-tf.loadModel('https://thefallen.one/SlouchyJS/js_model/model.json').then(function(result, error){
+tf.loadModel('https://thefallen.one/SlouchyJS/example/vgg16-327-samples/model.json').then(function(result, error){
   if(!error){
     model = result;
     const LEARNING_RATE = 0.0005;
