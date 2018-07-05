@@ -60,7 +60,15 @@ function isChrome(){
           isIEedge === false;
 }
 
-
+function canUseWebcamTo(func){
+  if(!isChrome()){
+    alert("You must use Google Chrome");
+  }else if(!webcam.HasWebcamAccess()){
+    webcam.getMediaStream().then(success => func()).catch(error => jump("htu"));
+  }else{
+    func();
+  }
+}
 
 
 /** Main Functions **/
@@ -68,17 +76,18 @@ function isChrome(){
 function backgroundMonitoring(){
 
   STOP = false;
-  ui_background();
   //then = Date.now(); // Record time for statistics
 
-  bckgrndPic();
+  canUseWebcamTo(bckgrndPic);
+
+  ui_background();
 }
 
 
 function startTraining(){
   STOP = false;
 
-  queryTrainingData();
+  canUseWebcamTo(queryTrainingData);
 }
 
 

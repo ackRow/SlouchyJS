@@ -56,10 +56,13 @@ class WebCam {
   stop(){
     if(this.hasWebcamAccess)
       this.mediaStreamTrack.stop();
+
+    this.hasWebcamAccess = false;
   }
 
   // Weird way to convert a frame to an array of rgb pixel between 0 and 1 (return a Promise)
   takePicture(img_size){
+
     return this.imageCapture.grabFrame().then(imageBitmap => {
 
      this.canvas.width = img_size;
@@ -87,6 +90,10 @@ class WebCam {
     });
   }
 
+  HasWebcamAccess(){
+    return this.hasWebcamAccess;
+  }
+
   getImageCapture(){
     return this.imageCapture;
   }
@@ -102,7 +109,7 @@ let y;
 function takeBunchPic(){
 
   //UI animate
-  ui_anim(ctr_pic);
+  ui_anim(ctr_pic);   // after stop :/
 
   if (ctr_pic < NB_PIC){
 
@@ -153,7 +160,7 @@ function bckgrndPic(){
     webcam.takePicture(IMG_SIZE).then(
       function(x) {
         ui_monitor(predict(x) == 1.0);
-        
+
       }).catch(error => {
         console.log(error);
     });
