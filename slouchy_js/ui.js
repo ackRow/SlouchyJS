@@ -106,7 +106,7 @@ function notifySlouching() {
     });
 
     notification.onclick = function () {
-      window.open("https://thefallen.one/#risk");
+      window.open("https://deari.app/SlouchyJS/#risk");
     };
 
   }
