@@ -10,7 +10,7 @@
  * http://mozilla.org/MPL/2.0/.
  */
 
-const bckgrndPicInterval = 5000; // 5s
+const monitorInterval = 5000; // time in milliseconds between each posture check
 
 let STOP;
 let canvas;
@@ -19,6 +19,7 @@ let webcam;
 
 /** Helper Functions **/
 
+// Scroll to html anchor
 function jump(h){
     let top = document.getElementById(h).offsetTop; //Getting Y of target element
     window.scrollTo(0, top);                        //Go there directly or some transition
@@ -60,6 +61,7 @@ function isChrome(){
           isIEedge === false;
 }
 
+// Wrapper
 function canUseWebcamTo(func){
   if(!isChrome()){
     alert("You must use Google Chrome");
@@ -78,7 +80,7 @@ function backgroundMonitoring(){
   STOP = false;
   //then = Date.now(); // Record time for statistics
 
-  canUseWebcamTo(bckgrndPic);
+  canUseWebcamTo(takeMonitoringPhotos);
 
   ui_background();
 }
@@ -106,9 +108,9 @@ window.onload = function(){
 
   webcam = new WebCam(document.getElementById("video"), document.getElementById("myCanvas")); // hidden canvas to process captured photo
 
-  askPermission(); /* If the user hasn't accepted one of the permissions
+  //askPermission(); /* If the user hasn't accepted one of the permissions
   //                    He will be redirected to Information section. */
-  //loadWebCam(); // load webcam directly for tests
+  loadWebCam(); // load webcam directly for tests
 
   instruct = document.getElementById("instruct");
   subInstruct = document.getElementById("subInstruct");

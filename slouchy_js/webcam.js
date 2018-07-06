@@ -8,7 +8,6 @@
  */
 
 
-
 /** Init and Take Picture from the WebCam **/
 class WebCam {
 
@@ -22,8 +21,7 @@ class WebCam {
   }
 
   // Get access to the webcam (return a Promise)
-  getMediaStream()
-  {
+  getMediaStream() {
     let myClass = this;
 
     navigator.getUserMedia = ( navigator.getUserMedia ||
@@ -53,7 +51,7 @@ class WebCam {
   }
 
   // Releasing the webcam
-  stop(){
+  stop() {
     if(this.hasWebcamAccess)
       this.mediaStreamTrack.stop();
 
@@ -61,10 +59,10 @@ class WebCam {
   }
 
   // Weird way to convert a frame to an array of rgb pixel between 0 and 1 (return a Promise)
-  takePicture(img_size){
-
+  takePicture(img_size) {
     return this.imageCapture.grabFrame().then(imageBitmap => {
 
+      console.log(imageBitmap.data);
      this.canvas.width = img_size;
      this.canvas.height = img_size;
 
@@ -90,11 +88,11 @@ class WebCam {
     });
   }
 
-  HasWebcamAccess(){
+  HasWebcamAccess() {
     return this.hasWebcamAccess;
   }
 
-  getImageCapture(){
+  getImageCapture() {
     return this.imageCapture;
   }
 
@@ -106,37 +104,36 @@ let recTime, recInterval, then, ctr_pic;
 let y;
 
 // Take NB_PIC during recTime to train the neural network
-function takeBunchPic(){
+function takeTrainingPhotos() {
+  if(!STOP) {
+    //UI animate
+    ui_anim(ctr_pic);   // after stop :/
 
-  //UI animate
-  ui_anim(ctr_pic);   // after stop :/
+    if (ctr_pic < NB_PIC){
 
-  if (ctr_pic < NB_PIC){
+      webcam.takePicture(IMG_SIZE).then(
+        function(x) {
+          X_train.push(x);
+          Y_train.push(y);
+        }).catch(error => {
+          ui_error(error);
+        });
 
-    webcam.takePicture(IMG_SIZE).then(
-      function(x) {
-        X_train.push(x);
-        Y_train.push(y);
-      }).catch(error => {
-        console.error(error);
-      });
+      ctr_pic++;
+      if(ctr_pic >= NB_PIC/2){
+        y = [0, 1];
+      }
 
-    ctr_pic++;
-    if(ctr_pic >= NB_PIC/2){
-      y = [0, 1];
+      setTimeout(takeTrainingPhotos, recInterval);
+
+    }else{
+      train();
     }
-
-    if(!STOP)
-      setTimeout(takeBunchPic, recInterval);
-
-  }else{
-    train();
   }
 }
 
 // Launch the training sequence
-function queryTrainingData(){
-
+function queryTrainingData() {
   ctr_pic = 0; // counter
   recTime = 30000;// ms
   recInterval = recTime/NB_PIC;
@@ -148,24 +145,22 @@ function queryTrainingData(){
   X_train = [];
   Y_train = [];
 
-  takeBunchPic();
+  takeTrainingPhotos();
 }
 
 
 // take pictures each 5s to monitor posture in background
-function bckgrndPic(){
-
+function takeMonitoringPhotos() {
   if(!STOP){
-
     webcam.takePicture(IMG_SIZE).then(
       function(x) {
         ui_monitor(predict(x) == 1.0);
 
       }).catch(error => {
-        console.log(error);
+        ui_error(error);
     });
 
-    setTimeout(bckgrndPic, bckgrndPicInterval);
+    setTimeout(takeMonitoringPhotos, monitorInterval);
   }
 
 }
