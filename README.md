@@ -31,6 +31,6 @@ The clear benefit of using front end Javascript to process images lays in __keep
 
 * Like TensorFlow ? [Help developing the Neural Network](https://github.com/ackRow/SlouchyJS/wiki/TensorFlow)
 
-* Like front end Javascript ? [Help improving the UI  experience](https://github.com/ackRow/SlouchyJS/wiki/UserInterface)
+* Like front end Javascript ? [Help improving the user experience](https://github.com/ackRow/SlouchyJS/wiki/UserInterface)
 
-* Like Image Processing ? [Help capturing image from WebCam and preprocessing it to feed the neural network](https://github.com/ackRow/SlouchyJS/wiki/ImageProcessing)
+* Like Image Processing ? [Help capturing image from WebCam to feed the neural network](https://github.com/ackRow/SlouchyJS/wiki/ImageProcessing)
