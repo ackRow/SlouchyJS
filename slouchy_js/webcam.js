@@ -11,13 +11,10 @@
 /** Init and Take Picture from the WebCam **/
 class WebCam {
 
-  constructor(videoELmt, canvas) {
-    this.videoElmt = videoELmt;
+  constructor(videoElmt, canvas) {
+    this.videoElmt = videoElmt;
     this.canvas = canvas;
     this.hasWebcamAccess = false;
-
-    //this.mediaStreamTrack = null;
-    //this.imageCapture = null;
   }
 
   // Get access to the webcam (return a Promise)
@@ -45,8 +42,6 @@ class WebCam {
       {
          myClass.hasWebcamAccess = false;
          console.error(error);
-         throw "Can't access webcam";
-         //jump("info");
       });
   }
 
@@ -61,25 +56,22 @@ class WebCam {
   // Weird way to convert a frame to an array of rgb pixel between 0 and 1 (return a Promise)
   takePicture(img_size) {
     return this.imageCapture.grabFrame().then(imageBitmap => {
+      this.canvas.width = img_size;
+      this.canvas.height = img_size;
 
-      console.log(imageBitmap.data);
-     this.canvas.width = img_size;
-     this.canvas.height = img_size;
+      let ctx = this.canvas.getContext('2d');
+      ctx.drawImage(imageBitmap, 0,0, this.canvas.width, this.canvas.height);
+      let x = [];
 
-     let ctx = this.canvas.getContext('2d');
-     ctx.drawImage(imageBitmap, 0,0, this.canvas.width, this.canvas.height);
+      for(let i = 0; i < img_size; i++){
+        x[i] = [];
+        for(let j = 0; j < img_size; j++){
+          let pixel = ctx.getImageData(j,i,1,1).data;
 
-     let x = [];
-
-     for(let i = 0; i < img_size; i++){
-       x[i] = [];
-       for(let j = 0; j < img_size; j++){
-         let pixel = ctx.getImageData(j,i,1,1).data;
-
-         // rgb is inverted for Keras pre trained model ?
-         x[i][j] = [pixel[2]/255.0, pixel[1]/255.0, pixel[0]/255.0];
-       }
-     }
+          // rgb is inverted for Keras pre trained model ?
+          x[i][j] = [pixel[2]/255.0, pixel[1]/255.0, pixel[0]/255.0];
+        }
+      }
       return x;
     })
     .catch(error => {
@@ -107,7 +99,7 @@ let y;
 function takeTrainingPhotos() {
   if(!STOP) {
     //UI animate
-    ui_anim(ctr_pic);   // after stop :/
+    ui_anim(ctr_pic);
 
     if (ctr_pic < NB_PIC){
 
