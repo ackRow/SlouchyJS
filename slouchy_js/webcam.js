@@ -28,10 +28,12 @@ class WebCam {
      .then(function(mediaStream)
      {
         this.hasWebcamAccess = true;
-
+        
+        // transmitting footage from the webcam to the html video
         this.videoElmt.srcObject = mediaStream;
 
         this.mediaStreamTrack = mediaStream.getVideoTracks()[0];
+        // Allow us to extract image from the video stream
         this.imageCapture = new ImageCapture(this.mediaStreamTrack);
 
      }.bind(this))
