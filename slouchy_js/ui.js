@@ -45,7 +45,7 @@ function ui_anim(ctr_pic){
     if(ctr_pic % (NB_PIC/2) == 0){
       subInstruct.innerHTML = subIns.front;
     }else if(ctr_pic % (NB_PIC/4) == 0){
-      subInstruct.innerHTML = subIns.back;
+      subInstruct.innerHTML = subIns.front;//subIns.back;
     }else if(ctr_pic % (NB_PIC/2+NB_PIC/4+NB_PIC/8) == 0){
       subInstruct.innerHTML = subIns.right;
     }else if(ctr_pic % (NB_PIC/4+NB_PIC/8) == 0){

@@ -19,8 +19,6 @@ class WebCam {
 
   // Get access to the webcam (return a Promise)
   getMediaStream() {
-    let myClass = this;
-
     navigator.getUserMedia = ( navigator.getUserMedia ||
                      navigator.webkitGetUserMedia ||
                      navigator.mozGetUserMedia ||
@@ -29,20 +27,19 @@ class WebCam {
     return window.navigator.mediaDevices.getUserMedia({video: true})
      .then(function(mediaStream)
      {
-        myClass.hasWebcamAccess = true;
+        this.hasWebcamAccess = true;
 
-         //video = document.getElementById('video');
-        myClass.videoElmt.srcObject = mediaStream;
+        this.videoElmt.srcObject = mediaStream;
 
-        myClass.mediaStreamTrack = mediaStream.getVideoTracks()[0];
-        myClass.imageCapture = new ImageCapture(myClass.mediaStreamTrack);
+        this.mediaStreamTrack = mediaStream.getVideoTracks()[0];
+        this.imageCapture = new ImageCapture(this.mediaStreamTrack);
 
-     })
+     }.bind(this))
      .catch(function(error)
       {
-         myClass.hasWebcamAccess = false;
+         this.hasWebcamAccess = false;
          console.error(error);
-      });
+      }.bind(this))
   }
 
   // Releasing the webcam
