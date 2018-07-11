@@ -17,13 +17,74 @@ let canvas;
 let webcam;
 
 
-/** Helper Functions **/
+/** Webcam Helper Functions (Training + Monitoring) **/
 
-// Scroll to html anchor
-function jump(h){
-    let top = document.getElementById(h).offsetTop; //Getting Y of target element
-    window.scrollTo(0, top);                        //Go there directly or some transition
+let recTime, recInterval, then, ctr_pic;
+let y;
+
+// Take NB_PIC during recTime to train the neural network
+function takeTrainingPhotos() {
+  if(!STOP) {
+    //UI animate
+    ui_anim(ctr_pic);
+
+    if (ctr_pic < NB_PIC){
+
+      webcam.takePicture(IMG_SIZE).then(
+        function(x) {
+          X_train.push(x);
+          Y_train.push(y);
+        }).catch(error => {
+          ui_error(error);
+        });
+
+      ctr_pic++;
+      if(ctr_pic >= NB_PIC/2){
+        y = [0, 1];
+      }
+
+      setTimeout(takeTrainingPhotos, recInterval);
+
+    }else{
+      train();
+    }
+  }
 }
+
+// Launch the training sequence
+function queryTrainingData() {
+  ctr_pic = 0; // counter
+  recTime = 30000;// ms
+  recInterval = recTime/NB_PIC;
+
+  //then = Date.now(); show progress ?
+
+  //neural net
+  y = [1, 0];
+  X_train = [];
+  Y_train = [];
+
+  takeTrainingPhotos();
+}
+
+
+// take pictures each 5s to monitor posture in background
+function takeMonitoringPhotos() {
+  if(!STOP){
+    webcam.takePicture(IMG_SIZE).then(
+      function(x) {
+        ui_monitor(predict(x) == 1.0);
+
+      }).catch(error => {
+        ui_error(error);
+    });
+
+    setTimeout(takeMonitoringPhotos, monitorInterval);
+  }
+}
+
+
+/** Helper Functions **/
 
 function loadWebCam(){
   webcam.getMediaStream().catch(error => jump("htu"))

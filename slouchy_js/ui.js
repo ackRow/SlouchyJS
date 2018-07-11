@@ -33,6 +33,12 @@ let instruct;
 let subInstruct;
 let alertSlouch;
 
+// Scroll to html anchor
+function jump(h){
+    let top = document.getElementById(h).offsetTop; //Getting Y of target element
+    window.scrollTo(0, top);                        //Go there directly or some transition
+}
+
 // Change instructions during training  (could be done in a better way I think)
 function ui_anim(ctr_pic){
 
