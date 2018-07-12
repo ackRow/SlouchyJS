@@ -9,7 +9,7 @@
 
 const CLASSES = ['STRAIGHT','SLOUCH'];
 const NB_CLASSES = CLASSES.length
-const IMG_SIZE = 50;
+const IMG_SIZE = 416;
 
 const NB_PIC = 200; // TRAINING_SIZE
 
@@ -23,7 +23,8 @@ let history;
 
 let model;
 
-tf.loadModel('https://thefallen.one/SlouchyJS/example/vgg16-327-samples/model.json').then(function(result, error){
+// tiny yolo v2 transfer learning
+tf.loadModel('https://deari.app/js_model/model.json').then(function(result, error){
   if(!error){
     model = result;
     const LEARNING_RATE = 0.0005;
