@@ -9,7 +9,7 @@
 
 const CLASSES = ['STRAIGHT','SLOUCH'];
 const NB_CLASSES = CLASSES.length
-const IMG_SIZE = 416;
+const IMG_SIZE = 50;
 
 const NB_PIC = 200; // TRAINING_SIZE
 
@@ -21,25 +21,55 @@ let Y_train = []
 
 let history;
 
-let model;
+// Simple CNN
 
-// tiny yolo v2 transfer learning
-tf.loadModel('https://deari.app/js_model/model.json').then(function(result, error){
-  if(!error){
-    model = result;
-    const LEARNING_RATE = 0.0005;
-    const optimizer = tf.train.sgd(LEARNING_RATE);
+let model = tf.sequential();
 
-    model.compile({
-      optimizer: optimizer,
-      loss: 'categoricalCrossentropy',
-      metrics: ['accuracy'],
-    });
+model.add(tf.layers.conv2d({
+  inputShape: [IMG_SIZE, IMG_SIZE, 3],
+  kernelSize: 5,
+  filters: 8,
+  strides: 1,
+  activation: 'relu',
+  kernelInitializer: 'VarianceScaling'
+}));
 
-    console.log("model successfully loaded ! ");
-  }else
-    ui_error(error);
-}).catch(error => ui_error(error));
+model.add(tf.layers.maxPooling2d({
+  poolSize: [2, 2],
+  strides: [2, 2]
+}));
+
+
+model.add(tf.layers.conv2d({
+  kernelSize: 5,
+  filters: 16,
+  strides: 1,
+  activation: 'relu',
+  kernelInitializer: 'VarianceScaling'
+}));
+
+model.add(tf.layers.maxPooling2d({
+  poolSize: [2, 2],
+  strides: [2, 2]
+}));
+
+model.add(tf.layers.flatten());
+
+model.add(tf.layers.dense({
+  units: NB_CLASSES,
+  kernelInitializer: 'VarianceScaling',
+  activation: 'sigmoid'
+}));
+
+const LEARNING_RATE = 0.15;
+const optimizer = tf.train.sgd(LEARNING_RATE);
+
+model.compile({
+  optimizer: optimizer,
+  loss: 'categoricalCrossentropy',
+  metrics: ['accuracy'],
+});
+
 
 function train(){
   xs = tf.tensor4d(X_train, [NB_PIC, IMG_SIZE, IMG_SIZE, 3]);
