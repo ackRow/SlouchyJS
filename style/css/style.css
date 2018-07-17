@@ -7,14 +7,52 @@
  * http://mozilla.org/MPL/2.0/.
  */
 
-.titleSpace {
-  margin-top: 4vh;
+@font-face {
+    font-family: 'SixCaps'; /*a name to be used later*/
+    src: url('../font/SixCaps.ttf'); /*URL to font*/
 }
 
+@font-face {
+    font-family: 'Philosopher'; /*a name to be used later*/
+    src: url('../font/Philosopher-Bold.ttf'); /*URL to font*/
+}
+
+@font-face {
+    font-family: 'Barlow'; /*a name to be used later*/
+    src: url('../font/BarlowSemiCondensed-Regular.ttf'); /*URL to font*/
+}
+
+@font-face {
+    font-family: 'Share'; /*a name to be used later*/
+    src: url('../font/Share-Regular.ttf'); /*URL to font*/
+}
+
+.titleSpace {
+  margin-top: 0.
+  0.5vh;
+
+}
+
+.titleSpace h1 {
+	font-size: 10vh;
+  	font-family: 'SixCaps';
+  	color: #50c6d8;
+}
+
+@media (max-height: 730px) {
+  .titleSpace h1{
+    /* Minimum font size */
+    font-size: 100px
+  }
+}
+
+.titleSpace h5 {
+	font-family: Barlow;
+}
 
 /* Div containing webcam output and instructions */
 .videoContainer {
-    margin-top: 8vh;
+    margin-top: 4vh;
 }
 
 .video-circle {
@@ -45,12 +83,15 @@
 
 .paragraph {
   text-align: left;
+  font-family: Arial;
+  
 }
 
 * { padding: 0; margin: 0; }
 html, body, #fullheight {
     min-height: 100% !important;
     height: 100%;
+    font-family: 'Philosopher';
 }
 
 body {
@@ -71,4 +112,5 @@ header {
 main {
   background: linear-gradient(to bottom, #ffffff 0%, #e1f6f2 100%);
   min-height:200px;
+  
 }
