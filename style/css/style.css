@@ -8,23 +8,28 @@
  */
 
 @font-face {
-    font-family: 'SixCaps'; /*a name to be used later*/
-    src: url('../font/SixCaps.ttf'); /*URL to font*/
+    font-family: 'SixCaps'; 
+    src: url('../font/SixCaps.ttf'); 
 }
 
 @font-face {
-    font-family: 'Philosopher'; /*a name to be used later*/
-    src: url('../font/Philosopher-Bold.ttf'); /*URL to font*/
+    font-family: 'Philosopher'; 
+    src: url('../font/Philosopher-Bold.ttf'); 
 }
 
 @font-face {
-    font-family: 'Barlow'; /*a name to be used later*/
-    src: url('../font/BarlowSemiCondensed-Regular.ttf'); /*URL to font*/
+    font-family: 'Barlow'; 
+    src: url('../font/BarlowSemiCondensed-Regular.ttf'); 
 }
 
 @font-face {
-    font-family: 'Share'; /*a name to be used later*/
-    src: url('../font/Share-Regular.ttf'); /*URL to font*/
+    font-family: 'Share'; 
+    src: url('../font/Share-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'Gadugi'; 
+    src: url('../font/gadugi.ttf'); 
 }
 
 .titleSpace {
@@ -35,8 +40,8 @@
 
 .titleSpace h1 {
 	font-size: 10vh;
-  	font-family: 'SixCaps';
-  	color: #50c6d8;
+	font-family: Barlow;
+	color: #50c6d8;
 }
 
 @media (max-height: 730px) {
@@ -47,12 +52,13 @@
 }
 
 .titleSpace h5 {
-	font-family: Barlow;
+	color: #0e5a66;
 }
 
 /* Div containing webcam output and instructions */
 .videoContainer {
     margin-top: 4vh;
+    color: #001e1d;
 }
 
 .video-circle {
@@ -61,6 +67,7 @@
   margin-bottom: 2vh;
   width: 50vh;
   height: 50vh;
+  box-shadow: 1px 1px 10px 3px #0e5a66A0;
 }
 
 
@@ -73,7 +80,7 @@
 
 /* Adds a shadow to the Bootstrap alert */
 .alert {
-	box-shadow: 5px 5px #578782B0;
+  box-shadow: 3px 3px 10px 4px #0e5a6680;
   width: 90%;
   left: 0;
   right: 0;
@@ -83,15 +90,18 @@
 
 .paragraph {
   text-align: left;
-  font-family: Arial;
+  margin: 35px 0 20px;
+  font-family: Gadugi, Arial;
   
 }
 
 * { padding: 0; margin: 0; }
 html, body, #fullheight {
-    min-height: 100% !important;
-    height: 100%;
-    font-family: 'Philosopher';
+  min-height: 100% !important;
+  height: 100%;
+  font-family: Share;
+  background: #e4e8e5;
+  color: #022d2c;
 }
 
 body {
@@ -107,10 +117,21 @@ header {
   position: relative;
   min-height: 730px;
   overflow:auto;
+  box-shadow: 1px 1px 10px 3px #0e5a66A0;
 }
 
 main {
-  background: linear-gradient(to bottom, #ffffff 0%, #e1f6f2 100%);
+  background: linear-gradient(to bottom, #e4e8e5 0%, #e1f6f2 100%);
   min-height:200px;
-  
+  font-family: Philosopher;
+}
+
+.btn-outline-secondary{
+  color: #ab1400a5;
+  border-color: #ab1400a5;
+}
+.btn-outline-secondary:hover{
+	color: #fafafa;
+  border-color: #ab1400;
+  background-color: #ab1400;
 }
