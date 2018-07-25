@@ -39,7 +39,7 @@ class WebCam {
      .catch(function(error)
       {
          this.hasWebcamAccess = false;
-         console.error(error);
+         throw "No webcam found";
       }.bind(this))
   }
 

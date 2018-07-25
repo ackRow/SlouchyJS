@@ -79,7 +79,7 @@ function ui_idle(){
 function ui_error(error){
   console.error(error);
   instruct.innerHTML = INS.error;
-  subInstruct.innerHTML = subIns.error;
+  subInstruct.innerHTML = error;//subIns.error;
 }
 
 // Inform the user that he's been monitored in background and can switch tab

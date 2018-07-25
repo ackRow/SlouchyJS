@@ -127,7 +127,10 @@ function canUseWebcamTo(func){
   if(!isChrome()){
     alert("You must use Google Chrome");
   }else if(!webcam.HasWebcamAccess()){
-    webcam.getMediaStream().then(success => func()).catch(error => jump("htu"));
+    webcam.getMediaStream().then(success => func()).catch(error => { 
+      ui_error(error);
+      jump("htu");
+    });
   }else{
     func();
   }
