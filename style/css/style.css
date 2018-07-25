@@ -32,10 +32,9 @@
     src: url('../font/gadugi.ttf'); 
 }
 
-.titleSpace {
-  margin-top: 0.
-  0.5vh;
 
+.titleSpace {
+  margin-top: 0.5vh;
 }
 
 .titleSpace h1 {
@@ -80,17 +79,22 @@
 
 /* Adds a shadow to the Bootstrap alert */
 .alert {
-  box-shadow: 3px 3px 10px 4px #0e5a6680;
+  box-shadow: 3px 3px 10px 4px #00000060;
   width: 90%;
   left: 0;
   right: 0;
   margin:5px auto;
-  position: absolute;
+  position: fixed;
+  z-index: 1;
 }
 
+
+.outer_p {
+	border-left: 6px solid #50c6d8;
+}
 .paragraph {
   text-align: left;
-  margin: 35px 0 20px;
+  margin: 25px 10px 35px;
   font-family: Gadugi, Arial;
   
 }
@@ -121,7 +125,7 @@ header {
 }
 
 main {
-  background: linear-gradient(to bottom, #e4e8e5 0%, #e1f6f2 100%);
+  background: linear-gradient(to bottom, #e4e8e5 0%, #ffffff 100%);
   min-height:200px;
   font-family: Philosopher;
 }
