@@ -13,7 +13,7 @@ const IMG_SIZE = 50;
 
 const NB_PIC = 200; // TRAINING_SIZE
 
-const EPOCHS = 10;
+const EPOCHS = 5;
 const BATCH_SIZE = 64;
 
 let X_train = []
@@ -56,17 +56,22 @@ model.add(tf.layers.maxPooling2d({
 model.add(tf.layers.flatten());
 
 model.add(tf.layers.dense({
+	units: 128,
+	activation: 'elu'
+}));
+
+model.add(tf.layers.dense({
   units: NB_CLASSES,
   kernelInitializer: 'VarianceScaling',
   activation: 'sigmoid'
 }));
 
-const LEARNING_RATE = 0.15;
-const optimizer = tf.train.sgd(LEARNING_RATE);
+const LEARNING_RATE = 0.005;
+const optimizer = tf.train.adam(LEARNING_RATE);
 
 model.compile({
   optimizer: optimizer,
-  loss: 'categoricalCrossentropy',
+  loss: 'logcosh',
   metrics: ['accuracy'],
 });
 
