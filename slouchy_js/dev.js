@@ -72,16 +72,21 @@ function createDataset(nb_pic){
 
 // save trained neural net to your pc
 function downloadNeuralNet(){
-  model.save('downloads://my-slouchy-model');
+  neural_net.model.save('downloads://my-slouchy-model');
 }
 
 // load custom neural net from url
 function loadNeuralNet(url){
+  ui_loading("load_model");
   tf.loadModel(url).then(function(result, error){
   if(!error){
-    model = result;
-
+    if(!STOP)
+      stop();
+  
+    neural_net.setModel(result, true);
+    
     console.log("custom model successfully loaded ! ");
+    ui_idle(neural_net.HasTrain());
   }else
     ui_error(error);
   }).catch(error => ui_error(error));

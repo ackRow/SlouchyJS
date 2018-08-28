@@ -7,95 +7,106 @@
  * http://mozilla.org/MPL/2.0/.
  */
 
-const CLASSES = ['STRAIGHT','SLOUCH'];
-const NB_CLASSES = CLASSES.length
-const IMG_SIZE = 50;
+class NeuralNet {
 
-const NB_PIC = 200; // TRAINING_SIZE
+  constructor(classes, img_size){
+    this.classes = classes;
+    this.nb_classes = classes.length;
 
-const EPOCHS = 5;
-const BATCH_SIZE = 64;
+    this.img_size = img_size;
 
-let X_train = []
-let Y_train = []
+    this.hasTrain = false;
+  }
 
-let history;
+  HasTrain(){
+    return this.hasTrain;
+  }
 
-// Simple CNN
+  compile(optimizer, loss){
+    this.model.compile({
+      optimizer: optimizer,
+      loss: loss,
+      metrics: ['accuracy'],
+    });
+  }
 
-let model = tf.sequential();
+  train(x_train, y_train, training_size, epochs){
+    let xs = tf.tensor4d(x_train, [training_size, this.img_size, this.img_size, 3]);
+    let ys = tf.tensor2d(y_train, [training_size, this.nb_classes]);
 
-model.add(tf.layers.conv2d({
-  inputShape: [IMG_SIZE, IMG_SIZE, 3],
-  kernelSize: 5,
-  filters: 8,
-  strides: 1,
-  activation: 'relu',
-  kernelInitializer: 'VarianceScaling'
-}));
+    return this.model.fit(xs, ys, {epochs: epochs, shuffle:true/*, batchSize:BATCH_SIZE*/}).then(
+      function(result) {
+        //this.accuracy = result.history.acc;
+        console.log(result.history.acc) // show the accuracy to the user ?
+        this.hasTrain = true;
+        //backgroundMonitoring();
+      }.bind(this),
+        function(error){
+          throw error;
+      });
+  }
 
-model.add(tf.layers.maxPooling2d({
-  poolSize: [2, 2],
-  strides: [2, 2]
-}));
+  predict(X){
+    let y_pred = this.model.predict(tf.tensor4d([X], [1, this.img_size, this.img_size, 3]));
+    let y_class = tf.argMax(y_pred, [1]).dataSync();
 
+    return y_class;
+  }
 
-model.add(tf.layers.conv2d({
-  kernelSize: 5,
-  filters: 16,
-  strides: 1,
-  activation: 'relu',
-  kernelInitializer: 'VarianceScaling'
-}));
+  setModel(customModel, preTrained){
+    this.model = customModel;
+    this.hasTrain = preTrained;
+  }
 
-model.add(tf.layers.maxPooling2d({
-  poolSize: [2, 2],
-  strides: [2, 2]
-}));
+  async uploadModel(url, user){
+    let resp = await neural_net.model.save(tf.io.browserHTTPRequest(
+    url, {method: 'POST', headers: {'user': user}}));
 
-model.add(tf.layers.flatten());
+    return resp;
+  }
 
-model.add(tf.layers.dense({
-	units: 128,
-	activation: 'elu'
-}));
+  simpleCNN(){
+    this.model = tf.sequential();
 
-model.add(tf.layers.dense({
-  units: NB_CLASSES,
-  kernelInitializer: 'VarianceScaling',
-  activation: 'sigmoid'
-}));
+    this.model.add(tf.layers.conv2d({
+      inputShape: [this.img_size, this.img_size, 3],
+      kernelSize: 5,
+      filters: 8,
+      strides: 1,
+      activation: 'relu',
+      kernelInitializer: 'VarianceScaling'
+    }));
 
-const LEARNING_RATE = 0.005;
-const optimizer = tf.train.adam(LEARNING_RATE);
-
-model.compile({
-  optimizer: optimizer,
-  loss: 'logcosh',
-  metrics: ['accuracy'],
-});
+    this.model.add(tf.layers.maxPooling2d({
+      poolSize: [2, 2],
+      strides: [2, 2]
+    }));
 
 
-function train(){
-  xs = tf.tensor4d(X_train, [NB_PIC, IMG_SIZE, IMG_SIZE, 3]);
-  ys = tf.tensor2d(Y_train, [NB_PIC, NB_CLASSES]);
+    this.model.add(tf.layers.conv2d({
+      kernelSize: 5,
+      filters: 16,
+      strides: 1,
+      activation: 'relu',
+      kernelInitializer: 'VarianceScaling'
+    }));
 
-  model.fit(xs, ys, {epochs: EPOCHS, shuffle:true/*, batchSize:BATCH_SIZE*/}).then(
-    function(result) {
-      const accuracy = result.history.acc;
-      console.log(accuracy) // show the accuracy to the user ?
-      backgroundMonitoring();
-    },
-    function(error) {
-      ui_error(error);
-    }
-  );
-}
+    this.model.add(tf.layers.maxPooling2d({
+      poolSize: [2, 2],
+      strides: [2, 2]
+    }));
 
-// Get a prediction of the posture based on webcam photo
-function predict(X){
-  const y_pred = model.predict(tf.tensor4d([X], [1, IMG_SIZE, IMG_SIZE, 3]));
-  const y_class = tf.argMax(y_pred, [1]).dataSync();
+    this.model.add(tf.layers.flatten());
 
-  return y_class;
+    this.model.add(tf.layers.dense({
+      units: 128,
+      activation: 'elu'
+    }));
+
+    this.model.add(tf.layers.dense({
+      units: this.nb_classes,
+      kernelInitializer: 'VarianceScaling',
+      activation: 'sigmoid'
+    }));
+  }
 }

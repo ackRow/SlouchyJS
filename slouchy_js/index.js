@@ -1,5 +1,5 @@
 "use strict";
-"version 0.3.0";
+"version 0.4.0";
 
 /*
  * Copyright(C) 2018 Hugo Rosenkranz
@@ -12,30 +12,41 @@
 
 const monitorInterval = 5000; // time in milliseconds between each posture check
 
-let STOP;
+let STOP = true; // Idle state
 let canvas;
-let webcam;
 
+// Object
+let webcam;
+let neural_net;
+let accountManager;
 
 /** Webcam Helper Functions (Training + Monitoring) **/
+let monitorTimeout;
+let trainTimeout;
 
 let recTime, recInterval, then, ctr_pic;
+
+const NB_PIC = 200; // number training images
+let X_train;
+let Y_train;
 let y;
 
 // Take NB_PIC during recTime to train the neural network
 function takeTrainingPhotos() {
-  if(!STOP) {
+  //if(!STOP) {
     //UI animate
-    ui_anim(ctr_pic);
+    ui_anim(ctr_pic, NB_PIC);
 
     if (ctr_pic < NB_PIC){
 
-      webcam.takePicture(IMG_SIZE).then(
+      webcam.takePicture(neural_net.img_size).then(
         function(x) {
           X_train.push(x);
           Y_train.push(y);
         }).catch(error => {
-          ui_error(error);
+          //ui_error(error);
+          console.error(error);
+          ctr_pic--;
         });
 
       ctr_pic++;
@@ -43,12 +54,14 @@ function takeTrainingPhotos() {
         y = [0, 1];
       }
 
-      setTimeout(takeTrainingPhotos, recInterval);
-
+      trainTimeout = setTimeout(takeTrainingPhotos, recInterval);
     }else{
-      train();
+
+      neural_net.train(X_train, Y_train, NB_PIC, 5)
+      .then(result => backgroundMonitoring())
+      .catch(error => ui_error(error));
     }
-  }
+  //}
 }
 
 // Launch the training sequence
@@ -67,22 +80,20 @@ function queryTrainingData() {
   takeTrainingPhotos();
 }
 
-
 // take pictures each 5s to monitor posture in background
 function takeMonitoringPhotos() {
-  if(!STOP){
-    webcam.takePicture(IMG_SIZE).then(
+  //if(!STOP){
+    webcam.takePicture(neural_net.img_size).then(
       function(x) {
-        ui_monitor(predict(x) == 1.0);
+        ui_monitor(neural_net.predict(x) == 1.0);
 
       }).catch(error => {
         ui_error(error);
     });
 
-    setTimeout(takeMonitoringPhotos, monitorInterval);
-  }
+    monitorTimeout = setTimeout(takeMonitoringPhotos, monitorInterval);
+  //}
 }
-
 
 /** Helper Functions **/
 
@@ -136,50 +147,143 @@ function canUseWebcamTo(func){
   }
 }
 
-
 /** Main Functions **/
 
 function backgroundMonitoring(){
-
   STOP = false;
+  ui_background();
   //then = Date.now(); // Record time for statistics
 
   canUseWebcamTo(takeMonitoringPhotos);
 
-  ui_background();
 }
-
 
 function startTraining(){
   STOP = false;
+  ui_train();
 
   canUseWebcamTo(queryTrainingData);
 }
 
-
 function stop(){
-  STOP = true;
-
-  webcam.stop();
-  ui_idle();
+  if(!STOP){
+    STOP = true;
+    clearTimeout(monitorTimeout);
+    clearTimeout(trainTimeout);
+    //webcam.stop();
+    ui_idle(neural_net.HasTrain());
+  }else if(webcam.HasWebcamAccess())
+    webcam.stop();
 }
 
+function saveModel(){
 
+  return neural_net.uploadModel('https://slouchy.deari.app/rc/models/', accountManager.getId()).then(
+    function(result, err){
+      if(!err){
+        alert('Upload Successful');
+
+      }else{
+        ui_error(error);
+      }
+    })
+}
+
+function loadModel(user_id){
+    // Try to load a model
+    let url = 'https://slouchy.deari.app/rc/models/'+user_id+'/model.json';
+    return tf.loadModel(url).then(function(result, error){
+      if(!error){
+        if(!STOP)
+          stop();
+        neural_net.setModel(result, true);
+      }
+    });
+}
 
 /** Init Function **/
+function loadUIElement(){
+  
+  trainingBtn = document.getElementById("trainingBtn");
+  trainingBtn.onclick = function(){
+    if(neural_net.HasTrain() && STOP)
+      backgroundMonitoring();
+    else{
+      clearTimeout(monitorTimeout);
+      startTraining();
+    }
+  };
 
-window.onload = function(){
+  loginBtn = document.getElementById("loginBtn");
+  loginBtn.onclick = function(){
+    if(accountManager.HasLoggedIn())
+      accountManager.logout(ui_account)
+    else
+      window.location = accountManager.loginUrl();
+  }
 
-  webcam = new WebCam(document.getElementById("video"), document.getElementById("myCanvas")); // hidden canvas to process captured photo
+  savingBtn = document.getElementById("savingBtn");
+  savingBtn.onclick = function(){
+    if(neural_net.HasTrain() && accountManager.HasLoggedIn()){
+      savingBtn.innerHTML = "Saving...";
 
-  askPermission(); /* If the user hasn't accepted one of the permissions
-  //                    He will be redirected to Information section. */
-  //loadWebCam(); // load webcam directly for tests
+      saveModel().then( res => {
+        savingBtn.innerHTML = "Save";
+      });
+    }else if(!neural_net.HasTrain()){
+      alert("Please click on Get Started");
+    }else{
+      alert("Please log in with your Steem account");
+    }
+  }
 
   instruct = document.getElementById("instruct");
   subInstruct = document.getElementById("subInstruct");
+  welcomeCaption = document.getElementById("welcomeCaption");
+  usernameCaption = document.getElementById("username");
+  accountText = document.getElementById("accountText");
 
   alertSlouch = document.getElementById("alertSlouch");
 
-  ui_idle(); // Setting up labels...
+  ui_loading("steemconnect");
+  //ui_idle(neural_net.HasTrain()); // Setting up labels...
+  //ui_account(accountManager);
+}
+
+window.onload = function(){
+
+  webcam = new WebCam(document.getElementById("video"),
+                      document.getElementById("myCanvas")); // hidden canvas to process captured photo
+
+  neural_net = new NeuralNet(['STRAIGHT','SLOUCH'], 50); // classes and img_size
+  neural_net.simpleCNN(); // creating a CNN (2 conv2d + pooling + 2 dense)
+  neural_net.compile(tf.train.adam(0.005), 'logcosh')
+
+  askPermission(); /* If the user hasn't accepted one of the permissions
+  //                    He will be redirected to the information section. */
+  //loadWebCam(); // load webcam directly for tests
+
+  /* SteemConnect */
+  accountManager = new AccountManager(sc2.Initialize({
+                                      app: 'deari.app',
+                                      callbackURL: 'https://slouchy.deari.app/',
+                                      scope: ['login']//['custom_json']
+                                    }));
+
+  /* UI element */
+  loadUIElement();
+
+  // Try to connect to Steem
+  accountManager.retrieveUserInfo(new URL(window.location.href).searchParams,
+    function(accManager){
+      ui_account(accManager);
+      if(accManager.HasLoggedIn()){
+        ui_loading("load_model");
+        loadModel(accManager.getId())
+        .then(success => ui_idle(neural_net.HasTrain()))
+        .catch(error => ui_idle(neural_net.HasTrain()));
+      }else{
+        ui_idle(neural_net.HasTrain());
+      }                          
+  });
 }

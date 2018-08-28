@@ -73,8 +73,8 @@ class WebCam {
       return x;
     })
     .catch(error => {
-      console.error(error);
-      throw "Stop training";
+      //console.error(error);
+      throw "Webcam Overload";
     });
   }
 
