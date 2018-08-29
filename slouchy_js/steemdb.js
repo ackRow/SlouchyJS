@@ -38,14 +38,11 @@ class AccountManager {
 	      	this.account = result.account;
 	      	this.hasLoggedIn = true;
 	      }
-	      
+	      callback(this);
 
 			}.bind(this));
-		}
-		callback(this);
-		/* else {
+		} else {
 			callback(this);
-		}*/
+		}
 	}
-
 }
