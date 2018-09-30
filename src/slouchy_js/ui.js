@@ -177,7 +177,7 @@ function notifySlouching() {
     });
 
     notification.onclick = function () {
-      window.open("https://slouchy.deari.app/rc/#risk");
+      window.open("./#risk");
     };
   }
 }

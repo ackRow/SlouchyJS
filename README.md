@@ -2,6 +2,24 @@
 ```
 What do using computer and body building have in common ? Your posture matters
 ```
+## How to use
+
+* You will need [Docker](https://www.docker.com/get-started) to run SlouchyJS
+
+* Build the docker image
+
+```
+$ docker build -t local/slouchyjs .
+```
+
+* And run it !
+
+```
+$ docker run -p 1410:1410 -e PORT=1410 -td --name slouchy local/slouchyjs
+```
+
+* SlouchyJS should be running at http://localhost:1410 ( You will have to configure a https server to fully use SlouchyJS )
+
 ## Background
 Like many of us, I have spent more and more time in front of a computer in the last decade.  
 I’ve always tried to be healthy and listen to my body, therefore I’ve been quite surprised when my trapezius muscles started feeling tight and sometimes even painful.

@@ -1,5 +1,5 @@
 "use strict";
-"version 0.4.0";
+"version 0.6.0";
 
 /*
  * Copyright(C) 2018 Hugo Rosenkranz
@@ -148,7 +148,6 @@ function canUseWebcamTo(func){
 }
 
 /** Main Functions **/
-
 function backgroundMonitoring(){
   STOP = false;
   ui_background();
@@ -178,7 +177,7 @@ function stop(){
 
 function saveModel(){
 
-  return neural_net.uploadModel('https://slouchy.deari.app/rc/models/', accountManager.getId()).then(
+  return neural_net.uploadModel('./models/', accountManager.getId()).then(
     function(result, err){
       if(!err){
         alert('Upload Successful');
@@ -191,7 +190,7 @@ function saveModel(){
 
 function loadModel(user_id){
     // Try to load a model
-    let url = 'https://slouchy.deari.app/rc/models/'+user_id+'/model.json';
+    let url = './models/'+user_id+'/model.json';
     return tf.loadModel(url).then(function(result, error){
       if(!error){
         if(!STOP)
@@ -246,8 +245,6 @@ function loadUIElement(){
   alertSlouch = document.getElementById("alertSlouch");
 
   ui_loading("steemconnect");
-  //ui_idle(neural_net.HasTrain()); // Setting up labels...
-  //ui_account(accountManager);
 }
 
 window.onload = function(){
@@ -266,7 +263,7 @@ window.onload = function(){
   /* SteemConnect */
   accountManager = new AccountManager(sc2.Initialize({
                                       app: 'deari.app',
-                                      callbackURL: 'https://slouchy.deari.app/',
+                                      callbackURL: window.location.href,
                                       scope: ['login']//['custom_json']
                                     }));
 

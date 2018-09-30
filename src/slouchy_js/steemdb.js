@@ -1,5 +1,15 @@
+/*
+ * Copyright(C) 2018 Hugo Rosenkranz
+ *
+ * This Source Code Form is subject to the terms of the
+ * Mozilla Public License, v. 2.0. If a copy of the MPL
+ * was not distributed with this file, You can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ */
 
+// Store Steem Account Information
 class AccountManager {
+	// Uses steemconnectv2 api
 	constructor(api){
 		this.api = api;
 		this.account = {};
@@ -33,16 +43,15 @@ class AccountManager {
 
 			this.api.setAccessToken(params.get("access_token"));
 			this.api.me(function (err, result) {
-	     	//console.log('/me', err, result);
 	      if (!err) {
 	      	this.account = result.account;
 	      	this.hasLoggedIn = true;
+	      	callback(this);
 	      }
-	      callback(this);
-
 			}.bind(this));
 		} else {
 			callback(this);
 		}
 	}
+
 }
