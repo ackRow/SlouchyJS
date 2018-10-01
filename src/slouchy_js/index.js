@@ -263,7 +263,7 @@ window.onload = function(){
   /* SteemConnect */
   accountManager = new AccountManager(sc2.Initialize({
                                       app: 'deari.app',
-                                      callbackURL: window.location.href,
+                                      callbackURL: 'https://slouchy.deari.app/redirect.php',
                                       scope: ['login']//['custom_json']
                                     }));
 
