@@ -108,7 +108,7 @@ function ui_idle(hasTrain){
   trainingBtn.disabled = false;
 
   instruct.innerHTML = INS.idle;
-  
+
   alertSlouch.style.visibility = 'hidden';
 }
 
@@ -172,7 +172,7 @@ function notifySlouching() {
   else {
 
     var notification = new Notification('Got you', {
-      icon: './style/img/notif.png',
+      icon: './style/img/dr_ha.png',
       body: "It seems that you are slouching !",
     });
 
